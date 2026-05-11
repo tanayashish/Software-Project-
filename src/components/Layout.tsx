@@ -48,7 +48,7 @@ export default function Layout({ children, activeTab, setActiveTab, alertCount }
           <div className="bg-blue-600 p-2 rounded-lg mr-3 shadow-lg shadow-blue-200">
             <TrendingUp className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">PredictStock</h1>
+          <h1 className="text-xl font-bold tracking-tight text-slate-900">PredictStock AI</h1>
         </div>
 
         <nav className="flex-1 px-4 mt-2">
@@ -126,7 +126,7 @@ export default function Layout({ children, activeTab, setActiveTab, alertCount }
           <div className="flex items-center">
             <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mr-2">System</h2>
             <div className="bg-slate-100 h-1 w-8 rounded-full"></div>
-            <h2 className="text-sm font-semibold text-slate-900 ml-2">Retail Manager Pro</h2>
+            <h2 className="text-sm font-semibold text-slate-900 ml-2">PredictStock AI</h2>
           </div>
           
           <div className="flex items-center space-x-4">
