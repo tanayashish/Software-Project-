@@ -1,0 +1,159 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Validation Helpers ---
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'category', 'currentStock', 'sku', 'storeId', 'supplierId']) &&
+             data.name is string && data.name.size() <= 200 &&
+             data.category is string && data.category.size() <= 100 &&
+             data.currentStock is number &&
+             data.sku is string && data.sku.size() <= 64 &&
+             data.storeId is string && data.storeId.size() <= 128 &&
+             data.supplierId is string && data.supplierId.size() <= 128;
+    }
+
+    function isValidStore(data) {
+      return data.keys().hasAll(['name', 'location', 'warehouseCapacity']) &&
+             data.name is string && data.name.size() <= 200 &&
+             data.location is string && data.location.size() <= 200 &&
+             data.warehouseCapacity is number;
+    }
+
+    function isValidSupplier(data) {
+      return data.keys().hasAll(['name', 'contactEmail']) &&
+             data.name is string && data.name.size() <= 200 &&
+             data.contactEmail is string && data.contactEmail.size() <= 200;
+    }
+
+    function isValidSale(data) {
+      return data.keys().hasAll(['productId', 'storeId', 'quantity', 'timestamp', 'priceAtSale', 'costAtSale']) &&
+             data.productId is string && data.productId.size() <= 128 &&
+             data.storeId is string && data.storeId.size() <= 128 &&
+             data.quantity is number && data.quantity > 0 &&
+             data.priceAtSale is number && data.priceAtSale >= 0 &&
+             data.costAtSale is number && data.costAtSale >= 0 &&
+             exists(/databases/$(database)/documents/products/$(data.productId));
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['productId', 'storeId', 'supplierId', 'quantity', 'unitCost', 'status', 'placedAt', 'arriveAt']) &&
+             data.productId is string && data.productId.size() <= 128 &&
+             data.storeId is string && data.storeId.size() <= 128 &&
+             data.supplierId is string && data.supplierId.size() <= 128 &&
+             data.quantity is number && data.quantity > 0 &&
+             data.unitCost is number &&
+             data.status in ['pending', 'delivered', 'cancelled'];
+    }
+
+    function isValidEvent(data) {
+      return data.keys().hasAll(['type', 'label', 'storeId', 'endsAt']) &&
+             data.type in ['competitor', 'flashsale', 'festival'] &&
+             data.label is string && data.label.size() <= 200 &&
+             data.storeId is string && data.storeId.size() <= 128;
+    }
+
+    function isValidAlert(data) {
+      return data.keys().hasAll(['type', 'message', 'timestamp', 'priority', 'read']) &&
+             data.type in ['low_stock', 'out_of_stock', 'demand_surge', 'system', 'spoilage', 'anomaly'] &&
+             data.message is string && data.message.size() <= 500 &&
+             data.priority in ['low', 'medium', 'high'] &&
+             data.read is bool;
+    }
+
+    function isValidForecast(data) {
+      return data.keys().hasAll(['productId', 'storeId', 'predictedDemand', 'confidenceScore', 'reasoning', 'suggestedRestock', 'forecastDate']) &&
+             data.productId is string && data.productId.size() <= 128 &&
+             data.storeId is string && data.storeId.size() <= 128 &&
+             data.predictedDemand is number &&
+             data.confidenceScore is number &&
+             data.reasoning is string &&
+             data.suggestedRestock is number &&
+             exists(/databases/$(database)/documents/products/$(data.productId));
+    }
+
+    // --- Rules ---
+
+    match /products/{productId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidId(productId) && isValidProduct(incoming());
+      allow update: if isVerified() && isValidProduct(incoming()) && (
+        incoming().diff(existing()).affectedKeys().hasAny(['currentStock', 'lastRestocked', 'minStockThreshold', 'maxStockCapacity', 'totalSpoiled'])
+      );
+      allow delete: if isVerified();
+    }
+
+    match /stores/{storeId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidId(storeId) && isValidStore(incoming());
+      allow update: if isVerified() && isValidStore(incoming());
+      allow delete: if isVerified();
+    }
+
+    match /suppliers/{supplierId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidId(supplierId) && isValidSupplier(incoming());
+      allow update: if isVerified() && isValidSupplier(incoming());
+      allow delete: if isVerified();
+    }
+
+    match /sales/{saleId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidId(saleId) && isValidSale(incoming());
+      allow update: if false;
+      allow delete: if isVerified();
+    }
+
+    match /orders/{orderId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidId(orderId) && isValidOrder(incoming());
+      allow update: if isVerified() && (incoming().diff(existing()).affectedKeys().hasOnly(['status']));
+      allow delete: if isVerified();
+    }
+
+    match /events/{eventId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidId(eventId) && isValidEvent(incoming());
+      allow delete: if isVerified();
+    }
+
+    match /alerts/{alertId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidId(alertId) && isValidAlert(incoming());
+      allow update: if isVerified() && isValidAlert(incoming()) && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['read']);
+      allow delete: if isVerified();
+    }
+
+    match /forecasts/{productId} {
+      allow read: if isVerified();
+      allow create, update: if isVerified() && isValidId(productId) && isValidForecast(incoming());
+      allow delete: if isVerified();
+    }
+  }
+}
