@@ -35,17 +35,21 @@ PredictStock AI is an intelligent retail inventory management system designed to
    ```bash
    npm install
    ```
-3. Configure your environment variables. Create a `.env` file in the root directory and add the following:
-   ```env
-   VITE_FIREBASE_API_KEY=your_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   VITE_FIREBASE_APP_ID=your_app_id
-   GEMINI_API_KEY=your_gemini_api_key
-   ```
-   *Note: Firebase configuration is also managed via `firebase-applet-config.json` in this environment.*
+3. Configure your environment variables. For a production deployment (like Vercel), add the following to your Environment Variables panel:
+
+#### Core API
+- `GEMINI_API_KEY`: Your Google Gemini API key (from Google AI Studio).
+
+#### Firebase Configuration
+- `VITE_FIREBASE_API_KEY`: Firebase Web API Key.
+- `VITE_FIREBASE_AUTH_DOMAIN`: Firebase Auth Domain.
+- `VITE_FIREBASE_PROJECT_ID`: Firebase Project ID.
+- `VITE_FIREBASE_STORAGE_BUCKET`: Firebase Storage Bucket.
+- `VITE_FIREBASE_MESSAGING_SENDER_ID`: Firebase Messaging Sender ID.
+- `VITE_FIREBASE_APP_ID`: Firebase App ID.
+- `VITE_FIREBASE_DATABASE_ID`: (Optional) Firestore Database ID, defaults to `(default)`.
+
+*Note: In the AI Studio development environment, these are partially managed via `firebase-applet-config.json`.*
 
 ### Development
 
