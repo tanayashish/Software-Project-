@@ -156,7 +156,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit, stores, s
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Unit Price ($)</label>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Unit Price (₹)</label>
               <input
                 required
                 type="number"
@@ -168,7 +168,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit, stores, s
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Cost Price ($)</label>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Cost Price (₹)</label>
               <input
                 required
                 type="number"

@@ -35,9 +35,10 @@ import {
 import { Product, SaleRecord, Alert, Store, Supplier, InventoryOrder, SimulationEvent, Weather } from './types';
 import { LogIn, TrendingUp, Play, Pause, Database, CloudSun } from 'lucide-react';
 import { SEED_PRODUCTS, SEED_STORES, SEED_SUPPLIERS } from './seedData';
+import { Logo } from './components/Logo';
 import { cn } from './lib/utils';
 
-const DEFAULT_WEATHER: Weather = { type: 'sunny', icon: '☀️', label: 'Sunny', multipliers: {}, hasDelay: false };
+const DEFAULT_WEATHER: Weather = { type: 'sunny', icon: '', label: 'Sunny', multipliers: {}, hasDelay: false };
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -215,8 +216,8 @@ export default function App() {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-slate-50 p-6">
         <div className="max-w-md w-full bg-white p-12 rounded-3xl border border-slate-200 shadow-2xl shadow-blue-100 text-center animate-in fade-in zoom-in duration-500">
-          <div className="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center text-white mx-auto mb-8 shadow-lg shadow-blue-200">
-            <TrendingUp className="w-10 h-10" />
+          <div className="bg-blue-600 w-20 h-20 rounded-3xl flex items-center justify-center text-white mx-auto mb-8 shadow-lg shadow-blue-200">
+            <Logo className="w-12 h-12" />
           </div>
           <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">PredictStock AI</h1>
           <p className="text-slate-500 mb-8 font-medium">Smart Retail Inventory Forecasting & Auto-Restocking</p>

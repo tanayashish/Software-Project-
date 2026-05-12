@@ -111,7 +111,7 @@ export default function SalesAnalytics({ products, sales }: SalesAnalyticsProps)
           <h2 className="text-3xl font-black text-slate-900">{formatCurrency(averageTicket)}</h2>
           <div className="mt-4 flex items-center text-emerald-500 text-xs font-bold">
             <TrendingUp className="w-4 h-4 mr-1" />
-            <span>Market Standard: $12.50</span>
+            <span>Market Standard: ₹1050.00</span>
           </div>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default function SalesAnalytics({ products, sales }: SalesAnalyticsProps)
                   axisLine={false} 
                   tickLine={false}
                   tick={{ fill: '#64748b', fontSize: 11 }}
-                  tickFormatter={(val) => `$${val}`}
+                  tickFormatter={(val) => `₹${val}`}
                 />
                 <Tooltip 
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}

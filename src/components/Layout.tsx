@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShoppingCart, LayoutDashboard, Package, TrendingUp, Bell, Settings, Store, Truck, Zap, MessageSquare } from 'lucide-react';
+import { Logo } from './Logo';
 import { cn } from '../lib/utils';
 
 interface NavItemProps {
@@ -46,7 +47,7 @@ export default function Layout({ children, activeTab, setActiveTab, alertCount }
       <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
         <div className="p-6 flex items-center">
           <div className="bg-blue-600 p-2 rounded-lg mr-3 shadow-lg shadow-blue-200">
-            <TrendingUp className="w-6 h-6 text-white" />
+            <Logo className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900">PredictStock AI</h1>
         </div>

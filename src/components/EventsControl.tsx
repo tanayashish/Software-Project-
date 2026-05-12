@@ -4,12 +4,12 @@ import { SimulationEvent, Weather, Store } from '../types';
 import { cn, formatDate } from '../lib/utils';
 import { addEvent, deleteEvent } from '../services/store';
 
-const WEATHERS: Weather[] = [
-  { type: 'sunny', icon: '☀️', label: 'Sunny', multipliers: { Beverages: 1.3, Produce: 1.1 }, hasDelay: false },
-  { type: 'rainy', icon: '🌧️', label: 'Rainy', multipliers: { Bakery: 1.4, Beverages: 0.8 }, hasDelay: false },
-  { type: 'heatwave', icon: '🔥', label: 'Heatwave', multipliers: { Beverages: 2.0, Dairy: 1.3 }, hasDelay: false },
-  { type: 'storm', icon: '⛈️', label: 'Storm', multipliers: { Staples: 1.8, Bakery: 1.5, Beverages: 0.6 }, hasDelay: true },
-  { type: 'cold', icon: '❄️', label: 'Cold', multipliers: { Dairy: 1.2, Pantry: 1.3 }, hasDelay: true },
+const WEATHERS: (Weather & { lucideIcon: React.ElementType })[] = [
+  { type: 'sunny', icon: '☀️', lucideIcon: Sun, label: 'Sunny', multipliers: { Beverages: 1.3, Produce: 1.1 }, hasDelay: false },
+  { type: 'rainy', icon: '🌧️', lucideIcon: CloudRain, label: 'Rainy', multipliers: { Bakery: 1.4, Beverages: 0.8 }, hasDelay: false },
+  { type: 'heatwave', icon: '🔥', lucideIcon: Thermometer, label: 'Heatwave', multipliers: { Beverages: 2.0, Dairy: 1.3 }, hasDelay: false },
+  { type: 'storm', icon: '⛈️', lucideIcon: Wind, label: 'Storm', multipliers: { Staples: 1.8, Bakery: 1.5, Beverages: 0.6 }, hasDelay: true },
+  { type: 'cold', icon: '❄️', lucideIcon: Snowflake, label: 'Cold', multipliers: { Dairy: 1.2, Pantry: 1.3 }, hasDelay: true },
 ];
 
 interface EventsControlProps {
@@ -123,13 +123,18 @@ export default function EventsControl({ events, stores, currentWeather, onWeathe
               key={w.type}
               onClick={() => onWeatherChange(w)}
               className={cn(
-                "p-6 border-2 rounded-[32px] text-center transition-all",
+                "p-6 border-2 rounded-[32px] text-center transition-all flex flex-col items-center justify-center",
                 currentWeather.type === w.type 
                   ? "bg-white border-blue-600 shadow-xl shadow-blue-50 ring-4 ring-blue-50" 
                   : "bg-transparent border-slate-100 hover:border-slate-300 text-slate-600"
               )}
             >
-              <div className="text-4xl mb-4">{w.icon}</div>
+              <div className={cn(
+                "mb-4 p-3 rounded-2xl",
+                currentWeather.type === w.type ? "bg-blue-50 text-blue-600" : "bg-slate-50 text-slate-400"
+              )}>
+                <w.lucideIcon className="w-8 h-8" />
+              </div>
               <div className="font-black text-sm uppercase tracking-wider">{w.label}</div>
               <div className="mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 {w.hasDelay ? '⚠ Supply Delays' : 'Normal Shipping'}
